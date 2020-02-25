@@ -2,6 +2,8 @@
 
 - aria attributes are often used to work around non-semantic HTML. They're used like so: aria-attribute={value}
 - aria attributes provide contextual information for users with accessibility needs.
+- If you're using semantic HTML4 elements you shouldn't need to put aria attributes on them except in some browser-specific edge cases.
+- If you're using semantic HTML5 elements sometimes you'll need to put aria attributes on them depending on browser/VO support for the element.
 
 ## aria-activedescendant
 
@@ -11,9 +13,7 @@ Use it when: children within the widget are not natively focusable or their orde
 
 ### Notes
 
-- For an element with DOM focus using this attribute, the following must be true: 
-	- The value of aria-activedescendant refers to an element that is either a descendant of the element with DOM focus or is a logical descendant as indicated by the aria-owns attribute. 
-	- The element with DOM focus is a textbox with aria-controls referring to an element that supports aria-activedescendant, and the value of aria-activedescendant specified for the textbox refers to either a descendant of the element controlled by the textbox or is a logical descendant of that controlled element as indicated by the aria-owns attribute. For example, in a combobox, focus may remain on the textbox while the value of aria-activedescendant on the textbox element refers to a descendant of a popup listbox that is controlled by the textbox.
+- For an element with DOM focus using this attribute, the following must be true: - The value of aria-activedescendant refers to an element that is either a descendant of the element with DOM focus or is a logical descendant as indicated by the aria-owns attribute. - The element with DOM focus is a textbox with aria-controls referring to an element that supports aria-activedescendant, and the value of aria-activedescendant specified for the textbox refers to either a descendant of the element controlled by the textbox or is a logical descendant of that controlled element as indicated by the aria-owns attribute. For example, in a combobox, focus may remain on the textbox while the value of aria-activedescendant on the textbox element refers to a descendant of a popup listbox that is controlled by the textbox.
 
 ### aria-activedescendant on an example widget
 
@@ -63,6 +63,77 @@ Use it when: you need to provide supplementary information for elements that are
     </p>
 </div>
 ```
+
+## aria-disabled
+
+Use it when: you need to announce to a screenreader that an input field is currently inactive.
+
+### Notes:
+
+This aria-attribute does not affect the interactivity of HTML elements; set those attributes with javascript as needed.
+
+### aria-disabled + aria-live HTML example:
+
+```
+<form>
+    <div>
+        <label for="email">Your e-mail</label>
+        <input type="email" id="email">
+    </div>
+    <div>
+        <label for="terms">You agree to our terms and policy</label>
+        <input type="checkbox" id="terms">
+    </div>
+    <button  aria-disabled="true">Submit</button>
+    <p class="visually-hidden" aria-live="assertive"></p>
+</form>
+```
+
+### aria-disabled + aria-live JS example:
+
+```
+<script>
+(function() {
+    var form = document.querySelector('form');
+    var checkbox = form.querySelector('input[type="checkbox"]');
+    var allowed = false;
+
+  form.addEventListener('submit', function(event) {
+        if (allowed) {
+            console.log('you may pass');
+            event.preventDefault(); // needs to be removed in the real world
+        }
+
+        if (!allowed) {
+            console.log('you shall not pass');
+            event.preventDefault();
+        }
+  });
+
+    function toggleButton() {
+        var nonvisualHint = form.querySelector('.visually-hidden');
+      var submitButton = form.querySelector('button');
+      if (allowed) {
+        submitButton.setAttribute('aria-disabled', 'false');
+        nonvisualHint.textContent = 'Please hit the submit button to subscribe to our newsletter.';
+      } else {
+        submitButton.setAttribute('aria-disabled', 'true');
+        nonvisualHint.textContent = 'Please check the checkbox and agree to our terms to send this form.';
+      }
+    }
+
+    toggleButton();
+    checkbox.addEventListener('change', function() {
+        allowed = checkbox.checked;
+    toggleButton();
+    });
+})();
+</script>
+```
+
+### References:
+
+- [https://a11y-101.com/development/aria-disabled]
 
 ## aria-expanded={true|false}
 
@@ -121,7 +192,7 @@ Use it when: you don't want visually hidden but still-existent UI elements to be
 
 ## aria-label
 
-What it does: reads its value to a screen reader
+What it does: reads its value to a screen reader.
 
 Use it when: you need to provide context for HTML elements (things like - navigation menus, nondecorative images, and input types that don't contain text.)
 
@@ -163,3 +234,35 @@ Use it when: you need to gives context to multiple, grouped inputs described by 
 	<button id="b1">Confirm</button>
 </div>
 ```
+
+## aria-required
+
+What it does: reads that a form field is required.
+
+Use it when: you need to announce required form fields to a screenreader.
+
+### aria-required example
+
+```
+<form action="#" method="post"  id="login1" onsubmit="return errorCheck1()">
+  <p>Note: [*]denotes mandatory field</p>
+  <p>
+    <label for="usrname">Login name: </label>
+    <input type="text" name="usrname" id="usrname" aria-required="true"/>[*]
+  </p>
+  <p>
+    <label for="pwd">Password</label>
+    <input type="password" name="pwd" id="pwd" size="12" aria-required="true" />[*]
+  </p>
+  <p>
+    <input type="submit" value="Login" id="next_btn" name="next_btn"/>
+  </p>
+
+</form>
+```
+
+### References
+
+- [https://www.w3.org/TR/WCAG20-TECHS/ARIA2.html]
+
+
