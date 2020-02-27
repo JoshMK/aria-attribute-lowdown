@@ -13,7 +13,9 @@ Use it when: children within the widget are not natively focusable or their orde
 
 ### Notes
 
-- For an element with DOM focus using this attribute, the following must be true: - The value of aria-activedescendant refers to an element that is either a descendant of the element with DOM focus or is a logical descendant as indicated by the aria-owns attribute. - The element with DOM focus is a textbox with aria-controls referring to an element that supports aria-activedescendant, and the value of aria-activedescendant specified for the textbox refers to either a descendant of the element controlled by the textbox or is a logical descendant of that controlled element as indicated by the aria-owns attribute. For example, in a combobox, focus may remain on the textbox while the value of aria-activedescendant on the textbox element refers to a descendant of a popup listbox that is controlled by the textbox.
+- For an element with DOM focus using this attribute, the following must be true: 
+	- The value of aria-activedescendant refers to an element that is either a descendant of the element with DOM focus or is a logical descendant as indicated by the aria-owns attribute. 
+	- The element with DOM focus is a textbox with aria-controls referring to an element that supports aria-activedescendant, and the value of aria-activedescendant specified for the textbox refers to either a descendant of the element controlled by the textbox or is a logical descendant of that controlled element as indicated by the aria-owns attribute. For example, in a combobox, focus may remain on the textbox while the value of aria-activedescendant on the textbox element refers to a descendant of a popup listbox that is controlled by the textbox.
 
 ### aria-activedescendant on an example widget
 
@@ -234,6 +236,32 @@ Use it when: you need to gives context to multiple, grouped inputs described by 
 	<button id="b1">Confirm</button>
 </div>
 ```
+
+## aria-invalid
+
+What it does: reads that a form input is invalid
+
+Use it when: you need to indicate to a screenreader than an input field contains erroneous content
+
+### Notes
+
+Use aria-describedby with any labels that describe the error that occured after form submits (per typical form workflows)
+
+### aria-invalid with example form and error messages
+
+```
+<form>
+<div>
+<p><label for="pin">Personal Id. Number (PIN) - 4 digits: [*]</label> 
+<input type="text" size="4" name="pin" id="pin" aria-describedby="err_0"><span id="err_0">Error: Input data missing</span></p>
+</div>
+<input type="submit" value="Login" id="login_btn" name="login_btn">
+</form>
+```
+
+### References
+
+- [https://www.w3.org/WAI/WCAG21/working-examples/aria-invalid-data-format/]
 
 ## aria-required
 
